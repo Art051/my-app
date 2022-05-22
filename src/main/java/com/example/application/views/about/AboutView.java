@@ -1,10 +1,12 @@
 package com.example.application.views.about;
 
 import com.example.application.views.MainLayout;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.virtuallist.VirtualList;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -15,12 +17,17 @@ public class AboutView extends VerticalLayout {
     public AboutView() {
         setSpacing(false);
 
-        Image img = new Image("images/empty-plant.png", "placeholder plant");
-        img.setWidth("200px");
-        add(img);
+        Image lolaImg = new Image("images/lola-dawg.png", "lola dawg");
+        lolaImg.setWidth("400px");
 
-        add(new H2("This place intentionally left empty"));
-        add(new Paragraph("It’s a place where you can grow your own UI 🤗"));
+        add(lolaImg);
+
+        add(new H2("Lola's here to guide you through your visit."));
+
+        VirtualList<String> aboutLola = new VirtualList<>();
+        aboutLola.setItems("She's a dog.","She's an astronaut.","She's cuter than she is smart.");
+        add(aboutLola);
+
 
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);

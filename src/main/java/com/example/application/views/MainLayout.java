@@ -3,6 +3,7 @@ package com.example.application.views;
 
 import com.example.application.views.about.AboutView;
 import com.example.application.views.learningresources.LearningResourcesView;
+import com.example.application.views.maths.BingoView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -117,6 +118,7 @@ public class MainLayout extends AppLayout {
         return new MenuItemInfo[]{ //
                 new MenuItemInfo("Learning Resources", "la la-book-open", LearningResourcesView.class), //
 
+                new MenuItemInfo("Maths", "la la-file", BingoView.class), //
                 new MenuItemInfo("About", "la la-file", AboutView.class), //
 
         };
