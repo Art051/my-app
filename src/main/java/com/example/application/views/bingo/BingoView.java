@@ -1,60 +1,83 @@
 package com.example.application.views.bingo;
 
-import com.example.application.data.entity.Card;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.grid.Grid;
+import com.example.application.views.MainLayout;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.radiobutton.RadioGroupVariant;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import java.util.Collections;
 
-
-@Route(value = "maths/bingo")
 @PageTitle("Maths | Bingo")
-public class BingoView extends VerticalLayout{
-
-    Grid<Card> cardsGrid = new Grid<>(Card.class);
-    TextField filterText = new TextField();
-    BingoCardForm bingoCardForm;
-
+@Route(value = "maths/bingo", layout = MainLayout.class)
+public class BingoView extends VerticalLayout {
 
     public BingoView() {
+        setSpacing(false);
 
-        addClassName("bingo-view");
+        IntegerField learningNum = new IntegerField("Learning Number");
+        learningNum.setValue(1);
+        learningNum.setMin(1);
+        learningNum.setHasControls(true);
+        add(learningNum);
+
+        IntegerField minMultiplication = new IntegerField("Minimum multiplication");
+        minMultiplication.setValue(1);
+        minMultiplication.setMin(1);
+        minMultiplication.setHasControls(true);
+        add(minMultiplication);
+
+        IntegerField maxMultiplication = new IntegerField("Maximum multiplication");
+        maxMultiplication.setValue(2);
+        maxMultiplication.setMin(2);
+        maxMultiplication.setHasControls(true);
+        add(maxMultiplication);
+
+        IntegerField cardSize = new IntegerField("Card size");
+        cardSize.setValue(5);
+        cardSize.setMin(1);
+        cardSize.setHasControls(true);
+        add(cardSize);
+
+        FormLayout formLayout = new FormLayout(learningNum,
+                minMultiplication, maxMultiplication, cardSize);
+        formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 2));
+        add(formLayout);
+
+        RadioButtonGroup<String> formulaOrProduct = new RadioButtonGroup<>();
+        formulaOrProduct.addThemeVariants(RadioGroupVariant.LUMO_VERTICAL);
+        formulaOrProduct.setLabel("Show formulas or products");
+        formulaOrProduct.setItems("Formula", "Product");
+        add(formulaOrProduct);
+
+        Button clearButton = new Button("Clear");
+        clearButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        clearButton.getStyle().set("margin-inline-end", "auto");
+        clearButton.addClickListener(click -> {
+            learningNum.setValue(0);
+            minMultiplication.setValue(0);
+            maxMultiplication.setValue(0);
+            cardSize.setValue(0);
+        });
+
+        Button generateCards = new Button("Generate cards");
+        generateCards.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        HorizontalLayout buttonLayout = new HorizontalLayout(clearButton, generateCards);
+        buttonLayout.getStyle().set("flex-wrap", "wrap");
+        buttonLayout.setJustifyContentMode(JustifyContentMode.START);
+
+        add(buttonLayout);
+
         setSizeFull();
-        configureGrid();
-        configureForm();
-
-        add(getContent());
-    }
-
-    private Component getContent() {
-        HorizontalLayout content = new HorizontalLayout(cardsGrid, bingoCardForm);
-        content.setFlexGrow(2, cardsGrid);
-
-
-        content.setFlexGrow(1, bingoCardForm);
-        content.addClassNames("content");
-        content.setSizeFull();
-        return content;
-    }
-
-    private void configureForm() {
-        bingoCardForm = new BingoCardForm(Collections.emptyList());
-
-
-        bingoCardForm.setWidth("25em");
-    }
-
-    private void configureGrid() {
-        cardsGrid.addClassNames("bingo-cards-grid");
-        cardsGrid.setSizeFull();
-        cardsGrid.setColumns("cardNum", "formula", "product");
-        cardsGrid.addColumn(Card::getCardNumber).setHeader("Card number");
-        cardsGrid.getColumns().forEach(col -> col.setAutoWidth(true));
+        setJustifyContentMode(JustifyContentMode.CENTER);
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        getStyle().set("text-align", "center");
 
     }
 }

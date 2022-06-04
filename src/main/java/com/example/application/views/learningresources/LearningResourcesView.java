@@ -2,9 +2,9 @@ package com.example.application.views.learningresources;
 
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -12,20 +12,32 @@ import com.vaadin.flow.router.Route;
 @Route(value = "", layout = MainLayout.class)
 public class LearningResourcesView extends HorizontalLayout {
 
-    private TextField name;
-    private Button sayHello;
+    private Button ahButton;
+    private Paragraph paragraph;
 
     public LearningResourcesView() {
-        name = new TextField("Your name");
-        sayHello = new Button("Say hello");
-        sayHello.addClickListener(e -> {
-            Notification.show("Hello " + name.getValue());
+
+        paragraph = new Paragraph();
+        paragraph.setText("This is a simple website to practice using Vaadin framework and to provide a bingo card generator for someone.");
+
+        StringBuilder ahhText = new StringBuilder("Ahh");
+
+        ahButton = new Button("Clicky click");
+        ahButton.addClickListener(e -> {
+            if(e.getClickCount() < 10){
+                ahhText.append("h");
+                Notification.show(ahhText.toString());
+            }
+            else{
+                ahButton.setDisableOnClick(true);
+                Notification.show("Now look what you've gone and done");
+            }
         });
 
         setMargin(true);
-        setVerticalComponentAlignment(Alignment.END, name, sayHello);
+        setVerticalComponentAlignment(Alignment.END, ahButton);
 
-        add(name, sayHello);
+        add(paragraph, ahButton);
     }
 
 }

@@ -1,8 +1,6 @@
 package com.example.application.views.about;
 
 import com.example.application.views.MainLayout;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -18,7 +16,7 @@ public class AboutView extends VerticalLayout {
         setSpacing(false);
 
         Image lolaImg = new Image("images/lola-dawg.png", "lola dawg");
-        lolaImg.setWidth("400px");
+        lolaImg.setWidth("250px");
 
         add(lolaImg);
 
@@ -27,7 +25,6 @@ public class AboutView extends VerticalLayout {
         VirtualList<String> aboutLola = new VirtualList<>();
         aboutLola.setItems("She's a dog.","She's an astronaut.","She's cuter than she is smart.");
         add(aboutLola);
-
 
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);

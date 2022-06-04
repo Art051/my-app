@@ -2,21 +2,14 @@ package com.example.application.views;
 
 
 import com.example.application.views.about.AboutView;
+import com.example.application.views.bingo.BingoView;
 import com.example.application.views.learningresources.LearningResourcesView;
-import com.example.application.views.maths.BingoView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.NpmPackage;
-import com.vaadin.flow.component.html.Footer;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Header;
-import com.vaadin.flow.component.html.ListItem;
-import com.vaadin.flow.component.html.Nav;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.html.UnorderedList;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 
@@ -117,9 +110,8 @@ public class MainLayout extends AppLayout {
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[]{ //
                 new MenuItemInfo("Learning Resources", "la la-book-open", LearningResourcesView.class), //
-
-                new MenuItemInfo("Maths", "la la-file", BingoView.class), //
                 new MenuItemInfo("About", "la la-file", AboutView.class), //
+                new MenuItemInfo("Bingo", "la la-file", BingoView.class), //
 
         };
     }
