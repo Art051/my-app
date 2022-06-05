@@ -24,7 +24,7 @@ public class LearningResourcesView extends HorizontalLayout {
 
         ahButton = new Button("Clicky click");
         ahButton.addClickListener(e -> {
-            if(e.getClickCount() < 10){
+            if(e.getClickCount() < 5){
                 ahhText.append("h");
                 Notification.show(ahhText.toString());
             }
