@@ -6,10 +6,11 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -22,15 +23,19 @@ import java.util.List;
 @Route(value = "maths/bingo", layout = MainLayout.class)
 public class BingoView extends VerticalLayout {
 
-    private Binder<Card> binder = new Binder<>(Card.class);
-    private Card card = new Card();
+    private BeanValidationBinder<Card> binder;
+    private Card card;
     private List<String[]> completeTimesTable = new ArrayList<>();
-    int currentMulti;
+    private Button clearButton = new Button("Clear");
+    private Button generateCards = new Button("Generate cards");
 
     private IntegerField learningNum = new IntegerField("Learning Number");
     private IntegerField minMultiplication = new IntegerField("Minimum multiplication");
     private IntegerField maxMultiplication = new IntegerField("Maximum multiplication");
     private IntegerField cardSize = new IntegerField("Card size");
+    private boolean showFormulas;
+    int currentMulti;
+
 
     public BingoView() {
         setSpacing(false);
@@ -61,32 +66,52 @@ public class BingoView extends VerticalLayout {
         add(formLayout);
 
 
-        ComboBox<Boolean> formulaOrProductBox = new ComboBox<>("Show formulas");
-        formulaOrProductBox.setItems(true, false);
-        formulaOrProductBox.isRequired();
+        ComboBox<String> formulaOrProductBox = new ComboBox<>("Show formulas");
+        formulaOrProductBox.setItems("Formulas", "Products");
+        formulaOrProductBox.setRequired(true);
+        formulaOrProductBox.addValueChangeListener(e -> {
+            if (e.getValue().equals("Formulas")) {
+                showFormulas = true;
+            }
+            else if (e.getValue().equals("Products")) {
+                showFormulas = false;
+            }
+        });
+
         add(formulaOrProductBox);
 
-        Button clearButton = new Button("Clear");
         clearButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         clearButton.getStyle().set("margin-inline-end", "auto");
         clearButton.addClickListener(click -> {
-            learningNum.setValue(1);
-            minMultiplication.setValue(1);
-            maxMultiplication.setValue(2);
-            cardSize.setValue(1);
+            resetFormFields();
         });
-//        binder.readBean(card);
 
-        Button generateCards = new Button("Generate cards");
+        binder = new BeanValidationBinder<>(Card.class);
+
+        binder.bindInstanceFields(this);
+
         generateCards.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         generateCards.addClickListener(e -> {
-            binder.bindInstanceFields(this);
-            card.setCompleteTimesTable(card.getCompleteTimesTable());
-            card.getRemainingOptions().addAll(card.getCompleteTimesTable());
-            card.setCardPairs(card.getCardPairs());
-            card.setCardSelections(card.getCardSelections());
             try {
-                binder.writeBean(card);
+                if (formulaOrProductBox.getValue().equals("Formulas")){
+                    this.showFormulas = true;
+                }
+                else if (formulaOrProductBox.getValue().equals("Products")){
+                    this.showFormulas = false;
+                }
+                if (this.card == null) {
+                    this.card = new Card();
+                }
+//                binder.forField(showFormulas)
+//                        .bind(Card::isShowFormulas,
+//                                Card::setShowFormulas);
+                binder.writeBean(this.card);
+//                binder.bindInstanceFields(this);
+                card.setCompleteTimesTable(card.getCompleteTimesTable());
+                card.getRemainingOptions().addAll(card.getCompleteTimesTable());
+                card.setCardPairs(card.getCardPairs());
+                card.setCardSelections(card.getCardSelections());
+                Notification.show("Card generated!");
             } catch (ValidationException ex) {
                 ex.printStackTrace();
             }
@@ -108,5 +133,12 @@ public class BingoView extends VerticalLayout {
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
 
+    }
+
+    private void resetFormFields() {
+        learningNum.setValue(1);
+        minMultiplication.setValue(1);
+        maxMultiplication.setValue(2);
+        cardSize.setValue(1);
     }
 }
