@@ -1,10 +1,12 @@
 package com.example.application.views.bingo;
 
 import com.example.application.data.entity.Card;
+import com.example.application.data.entity.FileHandling;
+import com.example.application.data.entity.GamePlay;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -15,6 +17,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,23 +26,76 @@ import java.util.List;
 @Route(value = "maths/bingo", layout = MainLayout.class)
 public class BingoView extends VerticalLayout {
 
-    private BeanValidationBinder<Card> binder;
+    private final BeanValidationBinder<Card> binder;
     private Card card;
-    private List<String[]> completeTimesTable = new ArrayList<>();
-    private Button clearButton = new Button("Clear");
-    private Button generateCards = new Button("Generate cards");
-
-    private IntegerField learningNum = new IntegerField("Learning Number");
-    private IntegerField minMultiplication = new IntegerField("Minimum multiplication");
-    private IntegerField maxMultiplication = new IntegerField("Maximum multiplication");
-    private IntegerField cardSize = new IntegerField("Card size");
-    private boolean showFormulas;
-    int currentMulti;
+    private final List<Card> cardsList = new ArrayList<>();
+    private final GamePlay gamePlay = new GamePlay();
+    private final FileHandling fileHandling = new FileHandling();
+    private final Button clearButton = new Button("Clear");
+    private final Button generateCards = new Button("Generate cards");
+    private final IntegerField learningNum = new IntegerField("Learning Number");
+    private final IntegerField minMultiplication = new IntegerField("Minimum multiplication");
+    private final IntegerField maxMultiplication = new IntegerField("Maximum multiplication");
+    private final IntegerField cardCount = new IntegerField("Number of player cards");
+    private final IntegerField cardSize = new IntegerField("Card size");
+    private final Checkbox showFormulas = new Checkbox("Show formulas");
 
 
     public BingoView() {
         setSpacing(false);
 
+        binder = new BeanValidationBinder<>(Card.class);
+        binder.bindInstanceFields(this);
+
+        setFieldDefaultVals();
+        FormLayout formLayout = new FormLayout(learningNum,
+                minMultiplication, maxMultiplication, cardCount, cardSize);
+        formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 2));
+        add(formLayout);
+        showFormulas.addValueChangeListener(click -> {
+            Notification.show("Check to generate cards with formulas, uncheck to generate cards with products.",
+                    5000,
+                    Notification.Position.BOTTOM_END);
+        });
+
+        add(showFormulas);
+
+        createClearButton();
+        createGeneratorButton();
+        HorizontalLayout buttonLayout = new HorizontalLayout(clearButton, generateCards);
+        buttonLayout.getStyle().set("flex-wrap", "wrap");
+        buttonLayout.setJustifyContentMode(JustifyContentMode.START);
+        add(buttonLayout);
+
+        setSizeFull();
+        setJustifyContentMode(JustifyContentMode.CENTER);
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        getStyle().set("text-align", "center");
+    }
+
+    private void createClearButton() {
+        clearButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        clearButton.getStyle().set("margin-inline-end", "auto");
+        clearButton.addClickListener(click -> {
+            resetFormFields();
+        });
+    }
+
+    private void createGeneratorButton() {
+        generateCards.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        generateCards.addClickListener(e -> {
+            try {
+                cardsList.clear();
+                generateCards();
+                fileHandling.generateCSV(gamePlay);
+            }
+            catch (ValidationException | IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    private void setFieldDefaultVals() {
         learningNum.setValue(1);
         learningNum.setMin(1);
         learningNum.setHasControls(true);
@@ -55,84 +111,29 @@ public class BingoView extends VerticalLayout {
         maxMultiplication.setHasControls(true);
         add(maxMultiplication);
 
+        cardCount.setValue(1);
+        cardCount.setMin(1);
+        cardCount.setHasControls(true);
+        add(cardCount);
+
         cardSize.setValue(1);
         cardSize.setMin(1);
         cardSize.setHasControls(true);
         add(cardSize);
+    }
 
-        FormLayout formLayout = new FormLayout(learningNum,
-                minMultiplication, maxMultiplication, cardSize);
-        formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 2));
-        add(formLayout);
-
-
-        ComboBox<String> formulaOrProductBox = new ComboBox<>("Show formulas");
-        formulaOrProductBox.setItems("Formulas", "Products");
-        formulaOrProductBox.setRequired(true);
-        formulaOrProductBox.addValueChangeListener(e -> {
-            if (e.getValue().equals("Formulas")) {
-                showFormulas = true;
-            }
-            else if (e.getValue().equals("Products")) {
-                showFormulas = false;
-            }
-        });
-
-        add(formulaOrProductBox);
-
-        clearButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        clearButton.getStyle().set("margin-inline-end", "auto");
-        clearButton.addClickListener(click -> {
-            resetFormFields();
-        });
-
-        binder = new BeanValidationBinder<>(Card.class);
-
-        binder.bindInstanceFields(this);
-
-        generateCards.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        generateCards.addClickListener(e -> {
-            try {
-                if (formulaOrProductBox.getValue().equals("Formulas")){
-                    this.showFormulas = true;
-                }
-                else if (formulaOrProductBox.getValue().equals("Products")){
-                    this.showFormulas = false;
-                }
-                if (this.card == null) {
-                    this.card = new Card();
-                }
-//                binder.forField(showFormulas)
-//                        .bind(Card::isShowFormulas,
-//                                Card::setShowFormulas);
-                binder.writeBean(this.card);
-//                binder.bindInstanceFields(this);
-                card.setCompleteTimesTable(card.getCompleteTimesTable());
-                card.getRemainingOptions().addAll(card.getCompleteTimesTable());
-                card.setCardPairs(card.getCardPairs());
-                card.setCardSelections(card.getCardSelections());
-                Notification.show("Card generated!");
-            } catch (ValidationException ex) {
-                ex.printStackTrace();
-            }
-
-            System.out.println(completeTimesTable);
-            System.out.println("Min multi " + minMultiplication.getValue());
-            System.out.println("Max multi " + maxMultiplication.getValue());
-            System.out.println(card.toString());
-        });
-
-        HorizontalLayout buttonLayout = new HorizontalLayout(clearButton, generateCards);
-        buttonLayout.getStyle().set("flex-wrap", "wrap");
-        buttonLayout.setJustifyContentMode(JustifyContentMode.START);
-
-        add(buttonLayout);
-
-        setSizeFull();
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        getStyle().set("text-align", "center");
-
+    private void generateCards() throws ValidationException {
+        for(int i = 0; i < cardCount.getValue(); i++) {
+            this.card = new Card();
+            binder.writeBean(this.card);
+            card.setCompleteTimesTable(card.getCompleteTimesTable());
+            card.getRemainingOptions().addAll(card.getCompleteTimesTable());
+            card.setCardPairs(card.getCardPairs());
+            card.setCardSelections(card.getCardSelections());
+            cardsList.add(card);
+            gamePlay.setPlayerList(cardsList);
+        }
+        Notification.show("Generation complete!");
     }
 
     private void resetFormFields() {

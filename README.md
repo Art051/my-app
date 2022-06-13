@@ -10,5 +10,6 @@
 - Fulfill promise of making a bingo game generator for someone to use to save them time.
 
 ####TO-DO
-Refactor and tidy up a lot.
-Figure out binding of boolean fields
+Generate PDF containing tables representing each card generated.
+~Refactor and tidy up a lot.~ Tidied up a little bit.
+~Figure out binding of boolean fields.~ Done

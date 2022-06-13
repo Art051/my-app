@@ -140,14 +140,14 @@ public class Card {
         }
 
         return "Card: " +
-                "learningNum=" + learningNum + '\n' +
-                ", minMultiplication=" + minMultiplication + '\n' +
-                ", maxMultiplication=" + maxMultiplication + '\n' +
-                ", cardSize=" + cardSize + '\n' +
-                ", showFormulas=" + showFormulas + '\n' +
-                ", completeTimesTable=" + completeTimesTableString + '\n' +
-                ", remainingOptions=" + remainingOptionsString + '\n' +
-                ", cardPairs=" + cardPairsString + '\n' +
-                ", cardSelections=" + cardSelectionsString;
+                "Learning Num =" + learningNum + '\n' +
+                "Min Multiplication =" + minMultiplication + '\n' +
+                "Max Multiplication=" + maxMultiplication + '\n' +
+                "Card Size=" + cardSize + '\n' +
+                "Show Formulas=" + showFormulas + '\n' +
+                "Complete TimesTable=" + completeTimesTableString + '\n' +
+                "Remaining Options=" + remainingOptionsString + '\n' +
+                "Card Pairs=" + cardPairsString + '\n' +
+                "Card Selections=" + cardSelectionsString;
     }
 }

@@ -8,14 +8,17 @@ import java.util.stream.Collectors;
 
 public class FileHandling {
 
-    File cardsCSV = new File("cards.csv");
-    FileWriter fileWriter = new FileWriter(cardsCSV);
-    BufferedWriter buffWriter = new BufferedWriter(fileWriter);
+    File cardsCSV;
+    FileWriter fileWriter;
+    BufferedWriter buffWriter;
 
-    public FileHandling() throws IOException {
+    public FileHandling() {
     }
 
-    void generateCSV(GamePlay game, BufferedWriter buffWriter) throws IOException {
+    public void generateCSV(GamePlay game) throws IOException {
+        cardsCSV = new File("cards.csv");
+        fileWriter = new FileWriter(cardsCSV);
+        buffWriter = new BufferedWriter(fileWriter);
         for(Card card : game.getPlayerList()) {
             String cardSelections = card.getCardSelections().stream()
                     .collect(Collectors.joining(","));
