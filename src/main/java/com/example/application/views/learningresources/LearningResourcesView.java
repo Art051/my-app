@@ -18,7 +18,7 @@ public class LearningResourcesView extends HorizontalLayout {
     public LearningResourcesView() {
 
         paragraph = new Paragraph();
-        paragraph.setText("This is a simple website to practice using Vaadin framework and to provide a bingo card generator for someone.");
+        paragraph.setText("This is a simple website to practice using Vaadin framework and to provide some basic tools for someone.");
 
         StringBuilder ahhText = new StringBuilder("Ahh");
 

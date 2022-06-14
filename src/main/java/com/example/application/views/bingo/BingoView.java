@@ -4,11 +4,17 @@ import com.example.application.data.entity.Card;
 import com.example.application.data.entity.FileHandling;
 import com.example.application.data.entity.GamePlay;
 import com.example.application.views.MainLayout;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Aside;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -47,15 +53,24 @@ public class BingoView extends VerticalLayout {
         binder = new BeanValidationBinder<>(Card.class);
         binder.bindInstanceFields(this);
 
+        Div pageDescription = new Div();
+        pageDescription.add(new Paragraph("Welcome to the Bingo card generator! \n To create a series of individual cards for players, please complete all fields." +
+                "The cards will then be generated in the form of tables which can be printed and cut-out as individual cards."));
+        add(pageDescription);
+
+
         setFieldDefaultVals();
         FormLayout formLayout = new FormLayout(learningNum,
                 minMultiplication, maxMultiplication, cardCount, cardSize);
         formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 2));
         add(formLayout);
+
+        boolean[] infoNotifHasShown = {false};
         showFormulas.addValueChangeListener(click -> {
-            Notification.show("Check to generate cards with formulas, uncheck to generate cards with products.",
-                    5000,
-                    Notification.Position.BOTTOM_END);
+            if (!infoNotifHasShown[0]){
+                createFormProdNotif();
+                infoNotifHasShown[0] = true;
+            }
         });
 
         add(showFormulas);
@@ -71,6 +86,30 @@ public class BingoView extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
+    }
+
+    private void createFormProdNotif(){
+        // When creating a notification using the constructor,
+// the duration is 0-sec by default which means that
+// the notification does not close automatically.
+
+            Notification notification = new Notification();
+            notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+
+            Div statusText = new Div(new Text("Check to generate cards with formulas, uncheck to generate cards with products."));
+
+            Button closeButton = new Button(new Icon("lumo", "cross"));
+            closeButton.addThemeVariants(ButtonVariant.LUMO_SMALL);
+            closeButton.getElement().setAttribute("aria-label", "Close");
+            closeButton.addClickListener(event -> {
+                notification.close();
+            });
+
+            HorizontalLayout layout = new HorizontalLayout(statusText, closeButton);
+            layout.setAlignItems(Alignment.CENTER);
+
+            notification.add(layout);
+            notification.open();
     }
 
     private void createClearButton() {
@@ -133,7 +172,6 @@ public class BingoView extends VerticalLayout {
             cardsList.add(card);
             gamePlay.setPlayerList(cardsList);
         }
-        Notification.show("Generation complete!");
     }
 
     private void resetFormFields() {

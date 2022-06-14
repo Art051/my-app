@@ -110,8 +110,8 @@ public class MainLayout extends AppLayout {
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[]{ //
                 new MenuItemInfo("Learning Resources", "la la-book-open", LearningResourcesView.class), //
-                new MenuItemInfo("About", "la la-file", AboutView.class), //
-                new MenuItemInfo("Bingo", "la la-file", BingoView.class), //
+                new MenuItemInfo("Bingo", "la la-calculator", BingoView.class), //
+                new MenuItemInfo("About", "la la-info-circle", AboutView.class), //
 
         };
     }
