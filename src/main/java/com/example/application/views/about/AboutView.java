@@ -12,12 +12,12 @@ import com.vaadin.flow.router.Route;
 @Route(value = "about", layout = MainLayout.class)
 public class AboutView extends VerticalLayout {
 
+        private Image lolaImg = new Image("images/lola-dawg.png", "lola dawg");
+
     public AboutView() {
         setSpacing(false);
 
-        Image lolaImg = new Image("images/lola-dawg.png", "lola dawg");
         lolaImg.setWidth("250px");
-
         add(lolaImg);
 
         add(new H2("Lola's here to guide you through your visit."));
@@ -31,5 +31,4 @@ public class AboutView extends VerticalLayout {
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
     }
-
 }

@@ -1,4 +1,4 @@
-package com.example.application.data.entity;
+package com.example.application.data;
 
 import java.util.ArrayList;
 import java.util.Arrays;

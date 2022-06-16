@@ -39,5 +39,4 @@ public class LearningResourcesView extends HorizontalLayout {
 
         add(paragraph, ahButton);
     }
-
 }
