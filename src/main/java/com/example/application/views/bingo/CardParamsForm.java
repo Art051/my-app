@@ -30,6 +30,12 @@ import java.util.List;
 
 public class CardParamsForm extends VerticalLayout {
 
+    private final BeanValidationBinder<Card> binder;
+    private Card card;
+    private final List<Card> cardsList = new ArrayList<>();
+    private final GamePlay gamePlay = new GamePlay();
+    private final FileHandling fileHandling = new FileHandling();
+
     //Fields relating to the user input form for setting card parameters
     private final IntegerField learningNum = new IntegerField("Learning Number");
     private final IntegerField minMultiplication = new IntegerField("Minimum multiplication");
@@ -41,21 +47,14 @@ public class CardParamsForm extends VerticalLayout {
     private final Button generateButton = new Button("Generate cards");
 
     //Fields for the deletion of files
-    private final File downloadableFiles = new File("src/main/resources/downloadfiles");
-    private final DownloadLinksArea linksArea = new DownloadLinksArea(downloadableFiles);
+    private final File downloadableFiles = new File(fileHandling.getGeneratedfilesMasterDir());
+    private final DownloadLinksView linksArea = new DownloadLinksView(downloadableFiles);
     private final Button clearFilesButton = new Button("Clear files");
     private final Button yesButton = new Button("Yes");
     private final Button noButton = new Button("No");
-    private Icon icon;
-
-    private final BeanValidationBinder<Card> binder;
-    private Card card;
-    private final List<Card> cardsList = new ArrayList<>();
-    private final GamePlay gamePlay = new GamePlay();
-    private final FileHandling fileHandling = new FileHandling();
 
 
-    public CardParamsForm() {
+    public CardParamsForm() throws IOException {
         binder = new BeanValidationBinder<>(Card.class);
         binder.bindInstanceFields(this);
         setParamsValues();
@@ -121,8 +120,7 @@ public class CardParamsForm extends VerticalLayout {
                 generateCards();
                 fileHandling.generateCSV(gamePlay);
                 linksArea.refreshFileLinks();
-            }
-            catch (ValidationException | IOException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
@@ -152,7 +150,6 @@ public class CardParamsForm extends VerticalLayout {
     }
 
     private void setClearFilesActions(){
-
         Notification confirmDelete = new Notification(new Text("Are you sure you want to delete the files?"));
         VerticalLayout clearFilesLayout = new VerticalLayout();
         confirmDelete.setPosition(Notification.Position.MIDDLE);
@@ -164,8 +161,12 @@ public class CardParamsForm extends VerticalLayout {
                         confirmDelete.close();
                     });
                     yesButton.addClickListener(yesClick -> {
-                        fileHandling.deleteDirectory(downloadableFiles);
-                        linksArea.refreshFileLinks();
+                        fileHandling.deleteDirectoryContents(downloadableFiles);
+                        try {
+                            linksArea.refreshFileLinks();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         confirmDelete.close();
                     });
                     clearFilesLayout.add(noButton,yesButton);

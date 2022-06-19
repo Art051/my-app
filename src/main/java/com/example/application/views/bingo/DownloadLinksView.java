@@ -1,25 +1,26 @@
 package com.example.application.views.bingo;
 
+import com.example.application.data.FileHandling;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.StreamResource;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 
-public class DownloadLinksArea extends VerticalLayout {
+public class DownloadLinksView extends VerticalLayout {
 
     private final File uploadFolder;
 
-    public DownloadLinksArea(File uploadFolder) {
+
+    public DownloadLinksView(File uploadFolder) throws IOException {
         this.uploadFolder = uploadFolder;
+        FileHandling fileHandling = new FileHandling();
+        fileHandling.generateFilesDirectory(uploadFolder.getName());
         refreshFileLinks();
         setMargin(true);
     }
 
-    public void refreshFileLinks() {
+    public void refreshFileLinks() throws IOException {
         removeAll();
         for (File file : uploadFolder.listFiles()) {
             addLinkToFile(file);
@@ -38,10 +39,10 @@ public class DownloadLinksArea extends VerticalLayout {
         FileInputStream stream = null;
         try {
             stream = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
         return stream;
     }
 }

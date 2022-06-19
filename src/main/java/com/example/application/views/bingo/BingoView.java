@@ -6,6 +6,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import java.io.IOException;
+
 
 @PageTitle("Maths | Bingo")
 @Route(value = "maths/bingo", layout = MainLayout.class)
@@ -15,7 +17,7 @@ public class BingoView extends VerticalLayout {
     private Paragraph paragraph;
 
 
-    public BingoView() {
+    public BingoView() throws IOException {
         setSpacing(false);
         paragraph = new Paragraph();
         paragraph.add("Welcome to the Bingo card generator!");
