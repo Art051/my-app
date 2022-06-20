@@ -20,7 +20,7 @@ public class FileHandling {
     private BufferedWriter buffWriter;
     private Calendar calendar;
     private File file;
-    private String generatedfilesMasterDir = "generated-files";
+    private final String generatedfilesMasterDir = "generated-files";
     private String filePrefix = "Bingo cards";
     private SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
 
@@ -37,7 +37,7 @@ public class FileHandling {
 
     public void generateCSV(GamePlay game) throws Exception {
         calendar = Calendar.getInstance();
-        File csvFile = new File(getGeneratedfilesMasterDir() + "/" + filePrefix + formatter.format(calendar.getTime()) + ".csv");
+        File csvFile = new File(getGeneratedfilesMasterDir() + "/" + filePrefix + " - " + formatter.format(calendar.getTime()) + ".csv");
         fileWriter = new FileWriter(csvFile);
         buffWriter = new BufferedWriter(fileWriter);
 
@@ -49,7 +49,7 @@ public class FileHandling {
             buffWriter.newLine();
         }
 
-        generatePDF(csvFile.getPath(),generatedfilesMasterDir +  "/" + filePrefix + formatter.format(calendar.getTime()) + ".pdf");
+        generatePDF(csvFile.getPath(),generatedfilesMasterDir +  "/" + filePrefix + " - " + formatter.format(calendar.getTime()) + ".pdf");
     }
 
     public void deleteDirectoryContents(File file) {
