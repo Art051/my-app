@@ -1,4 +1,4 @@
-## Game outline/description:
+# Game outline/description:
 - Bingo cards are generated using parameters to establish what the number being studied is
 - What the min and max multiplication is that they should know 
 - How many items per player card
@@ -9,7 +9,10 @@
 - Develop some knowledge of Vaadin while making the project, then host project on AWS.
 - Fulfill promise of making a bingo game generator for someone to use to save them time.
 
-#### TO-DO
-- Generate PDF containing tables representing each card generated.
-- ~Refactor and tidy up a lot.~ Tidied up a little bit.
+## TO-DO
+- Figure out hosting for web-app.
+- Implement a way to limit the number of CSV + PDFs created/stored to preserve app size.
+- Implement new generated file/folder structure to make viewing PDFs and CSVs separately possible. 
+- ~Generate PDF containing tables representing each card generated.~
+- ~Refactor and tidy up a lot.~ Tidied up a little.
 - ~Figure out binding of boolean fields.~ Done

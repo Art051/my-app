@@ -12,8 +12,8 @@ import com.vaadin.flow.router.Route;
 @Route(value = "", layout = MainLayout.class)
 public class LearningResourcesView extends HorizontalLayout {
 
-    private Button ahButton;
-    private Paragraph paragraph;
+    private final Button ahButton;
+    private final Paragraph paragraph;
 
     public LearningResourcesView() {
 
@@ -24,11 +24,11 @@ public class LearningResourcesView extends HorizontalLayout {
 
         ahButton = new Button("Clicky click");
         ahButton.addClickListener(e -> {
-            if(e.getClickCount() < 5){
+            if (e.getClickCount() < 5) {
                 ahhText.append("h");
                 Notification.show(ahhText.toString());
             }
-            else{
+            else {
                 ahButton.setDisableOnClick(true);
                 Notification.show("Now look what you've gone and done");
             }

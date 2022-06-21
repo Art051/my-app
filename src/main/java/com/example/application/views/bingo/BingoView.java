@@ -23,8 +23,8 @@ public class BingoView extends VerticalLayout {
         paragraph.add("Welcome to the Bingo card generator!");
         add(paragraph);
         paragraph = new Paragraph();
-        paragraph.add("To create a series of individual cards for players, please complete all fields." +
-                "The cards will then be generated in the form of tables which can be printed and cut-out as individual cards.");
+        paragraph.add("To create a series of individual cards for players, please complete all fields. \n" +
+                "The cards will then be generated as a CSV and PDF file which can be printed and cut-out as individual cards.");
         add(paragraph);
 
         add(cardParamsForm);

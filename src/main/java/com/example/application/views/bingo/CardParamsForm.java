@@ -20,8 +20,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.value.ValueChangeMode;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,12 +39,12 @@ public class CardParamsForm extends VerticalLayout {
     private final FileHandling fileHandling = new FileHandling();
 
     //Fields relating to the user input form for setting card parameters
-    private final IntegerField learningNum = new IntegerField("Learning Number");
+    private final IntegerField learningNum = new IntegerField("Learning number");
     private final IntegerField minMultiplication = new IntegerField("Minimum multiplication");
     private final IntegerField maxMultiplication = new IntegerField("Maximum multiplication");
     private final IntegerField cardCount = new IntegerField("Number of player cards");
     private final IntegerField cardSize = new IntegerField("Card size");
-    private final Checkbox showFormulas = new Checkbox("Show formulas");
+    private final Checkbox showFormulas = new Checkbox("Show formulas on player cards");
     private final Button clearButton = new Button("Clear");
     private final Button generateButton = new Button("Generate cards");
 
@@ -104,9 +106,16 @@ public class CardParamsForm extends VerticalLayout {
         cardSize.setValue(1);
         cardSize.setMin(1);
         cardSize.setHasControls(true);
+        cardSize.setHelperText("Card size has to be equal to or lower than maximum multiplication");
+        cardSize.addValueChangeListener(event -> {
+            if(event.getValue() > maxMultiplication.getValue()){
+                cardSize.setValue(maxMultiplication.getValue());
+            }
+        });
+        cardSize.setValueChangeMode(ValueChangeMode.EAGER);
     }
 
-    private HorizontalLayout createButtonLayout(){
+    private HorizontalLayout createButtonLayout() {
         clearButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         clearButton.getStyle().set("margin-inline-end", "auto");
         clearButton.addClickListener(click -> {
@@ -120,7 +129,8 @@ public class CardParamsForm extends VerticalLayout {
                 generateCards();
                 fileHandling.generateCSV(gamePlay);
                 linksArea.refreshFileLinks();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
@@ -137,7 +147,16 @@ public class CardParamsForm extends VerticalLayout {
     }
 
     private void generateCards() throws ValidationException {
-        for(int i = 0; i < cardCount.getValue(); i++) {
+        this.card = new Card();
+        binder.writeBean(this.card);
+        card.setShowFormulas(!showFormulas.getValue());
+        card.setCompleteTimesTable(card.getCompleteTimesTable());
+        card.getRemainingOptions().addAll(card.getCompleteTimesTable());
+        card.setCardPairs(card.getCardPairs());
+        card.setCardSelections(card.getCardSelections());
+        cardsList.add(card);
+        gamePlay.setPlayerList(cardsList);
+        for (int i = 0; i < cardCount.getValue(); i++) {
             this.card = new Card();
             binder.writeBean(this.card);
             card.setCompleteTimesTable(card.getCompleteTimesTable());
@@ -149,7 +168,7 @@ public class CardParamsForm extends VerticalLayout {
         }
     }
 
-    private void setClearFilesActions(){
+    private void setClearFilesActions() {
         Notification confirmDelete = new Notification(new Text("Are you sure you want to delete the files?"));
         VerticalLayout clearFilesLayout = new VerticalLayout();
         confirmDelete.setPosition(Notification.Position.MIDDLE);
@@ -164,25 +183,27 @@ public class CardParamsForm extends VerticalLayout {
                         fileHandling.deleteDirectoryContents(downloadableFiles);
                         try {
                             linksArea.refreshFileLinks();
-                        } catch (IOException e) {
+                        }
+                        catch (IOException e) {
                             e.printStackTrace();
                         }
                         confirmDelete.close();
                     });
-                    clearFilesLayout.add(noButton,yesButton);
+                    clearFilesLayout.add(noButton, yesButton);
                     clearFilesLayout.setAlignItems(Alignment.CENTER);
                     confirmDelete.add(clearFilesLayout);
                 }
         );
     }
 
-    private Notification createFormProdNotif(){
+    private Notification createFormProdNotif() {
         boolean[] infoNotifHasShown = {false};
 
         Notification notification = new Notification();
-        notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+        notification.addThemeVariants();
 
-        Div statusText = new Div(new Text("Check to generate cards with formulas, uncheck to generate cards with products."));
+        Div statusText = new Div(new Text("Check to generate player cards with formulas, uncheck to generate player cards with products. \n" +
+                "The teacher's card will have the opposite to the players' cards."));
 
         Button closeButton = new Button(new Icon("lumo", "cross"));
         closeButton.addThemeVariants(ButtonVariant.LUMO_SMALL);
@@ -197,7 +218,7 @@ public class CardParamsForm extends VerticalLayout {
         notification.add(layout);
 
         showFormulas.addValueChangeListener(click -> {
-            if (!infoNotifHasShown[0]){
+            if (!infoNotifHasShown[0]) {
                 notification.open();
                 infoNotifHasShown[0] = true;
             }

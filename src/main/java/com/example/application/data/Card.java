@@ -69,8 +69,8 @@ public class Card {
 
     public void setCompleteTimesTable(List<String[]> completeTimesTable) {
         int currentMulti = minMultiplication;
-        for(int i = 0; i <= (maxMultiplication - minMultiplication); i++){
-            completeTimesTable.add(new String[] {
+        for (int i = 0; i <= (maxMultiplication - minMultiplication); i++) {
+            completeTimesTable.add(new String[]{
                     learningNum + " X " + currentMulti,
                     String.valueOf(learningNum * currentMulti)}
             );
@@ -93,7 +93,7 @@ public class Card {
 
     public void setCardPairs(List<String[]> cardPairs) {
 
-        for(int i = 0; i < cardSize; i++){
+        for (int i = 0; i < cardSize; i++) {
             int currentSelection = random.nextInt(remainingOptions.size());
             cardPairs.add(remainingOptions.get(currentSelection));
             remainingOptions.remove(currentSelection);
@@ -106,9 +106,9 @@ public class Card {
     }
 
     public void setCardSelections(List<String> cardSelections) {
-        for(int i = 0; i < cardSize; i++) {
+        for (int i = 0; i < cardSize; i++) {
             String[] currentPair = cardPairs.get(i);
-            if(showFormulas){
+            if (showFormulas) {
                 cardSelections.add(currentPair[0]);
             }
             else {
@@ -118,24 +118,23 @@ public class Card {
         this.cardSelections = cardSelections;
     }
 
-
     @Override
     public String toString() {
         StringBuilder completeTimesTableString = new StringBuilder();
-        for(String[] option : completeTimesTable){
+        for (String[] option : completeTimesTable) {
             completeTimesTableString.append(Arrays.toString(option));
         }
         StringBuilder remainingOptionsString = new StringBuilder();
-        for(String[] option : remainingOptions){
+        for (String[] option : remainingOptions) {
             remainingOptionsString.append(Arrays.toString(option));
         }
         StringBuilder cardPairsString = new StringBuilder();
-        for(String[] pair : cardPairs){
+        for (String[] pair : cardPairs) {
             cardPairsString.append(Arrays.toString(pair));
         }
 
         StringBuilder cardSelectionsString = new StringBuilder();
-        for(String selection : cardSelections){
+        for (String selection : cardSelections) {
             cardSelectionsString.append(selection).append(" ");
         }
 

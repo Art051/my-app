@@ -72,7 +72,7 @@ public class GamePlay {
         this.playerList = playerList;
     }
 
-    public void addPlayerCard(Card card){
+    public void addPlayerCard(Card card) {
         this.playerList.add(card);
     }
 

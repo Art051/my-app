@@ -12,7 +12,7 @@ import com.vaadin.flow.router.Route;
 @Route(value = "about", layout = MainLayout.class)
 public class AboutView extends VerticalLayout {
 
-        private Image lolaImg = new Image("images/lola-dawg.png", "lola dawg");
+    private final Image lolaImg = new Image("images/lola-dawg.png", "lola dawg");
 
     public AboutView() {
         setSpacing(false);
@@ -23,7 +23,7 @@ public class AboutView extends VerticalLayout {
         add(new H2("Lola's here to guide you through your visit."));
 
         VirtualList<String> aboutLola = new VirtualList<>();
-        aboutLola.setItems("She's a dog.","She's an astronaut.","She's cuter than she is smart.");
+        aboutLola.setItems("She's a dog.", "She's an astronaut.", "She's cuter than she is smart.");
         add(aboutLola);
 
         setSizeFull();
