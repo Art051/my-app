@@ -22,7 +22,8 @@ public class FileHandling {
     private Calendar calendar;
     private File file;
     private StringTokenizer tokenizer;
-    private final String generatedfilesMasterDir = "generated-files";
+    private final String generatedfilesDirString = "generated-files";
+    private final File generatedfilesMasterDirFile = new File(generatedfilesDirString);
     private final String filePrefix = "Bingo cards";
     private final SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
 
@@ -39,7 +40,7 @@ public class FileHandling {
 
     public void generateCSV(GamePlay game) throws Exception {
         calendar = Calendar.getInstance();
-        File csvFile = new File(getGeneratedfilesMasterDir() + "/" + filePrefix + " - " + formatter.format(calendar.getTime()) + ".csv");
+        File csvFile = new File(generatedfilesDirString + "/" + filePrefix + " - " + formatter.format(calendar.getTime()) + ".csv");
         fileWriter = new FileWriter(csvFile);
         buffWriter = new BufferedWriter(fileWriter);
 
@@ -50,7 +51,7 @@ public class FileHandling {
             buffWriter.flush();
             buffWriter.newLine();
         }
-        generatePDF(csvFile.getPath(), generatedfilesMasterDir + "/" + filePrefix + " - " + formatter.format(calendar.getTime()) + ".pdf");
+        generatePDF(csvFile.getPath(), generatedfilesDirString + "/" + filePrefix + " - " + formatter.format(calendar.getTime()) + ".pdf");
     }
 
     public void deleteDirectoryContents(File file) {
@@ -99,7 +100,11 @@ public class FileHandling {
         table.startNewRow();
     }
 
-    public String getGeneratedfilesMasterDir() {
-        return generatedfilesMasterDir;
+    public String getGeneratedfilesDirString() {
+        return generatedfilesDirString;
+    }
+
+    public File getGeneratedfilesMasterDirFile() {
+        return generatedfilesMasterDirFile;
     }
 }

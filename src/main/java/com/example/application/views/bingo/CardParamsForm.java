@@ -14,13 +14,11 @@ import com.vaadin.flow.component.html.Section;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -49,7 +47,7 @@ public class CardParamsForm extends VerticalLayout {
     private final Button generateButton = new Button("Generate cards");
 
     //Fields for the deletion of files
-    private final File downloadableFiles = new File(fileHandling.getGeneratedfilesMasterDir());
+    private final File downloadableFiles = new File(fileHandling.getGeneratedfilesDirString());
     private final DownloadLinksView linksArea = new DownloadLinksView(downloadableFiles);
     private final Button clearFilesButton = new Button("Clear files");
     private final Button yesButton = new Button("Yes");
@@ -108,7 +106,7 @@ public class CardParamsForm extends VerticalLayout {
         cardSize.setHasControls(true);
         cardSize.setHelperText("Card size has to be equal to or lower than maximum multiplication");
         cardSize.addValueChangeListener(event -> {
-            if(event.getValue() > maxMultiplication.getValue()){
+            if (event.getValue() > maxMultiplication.getValue()) {
                 cardSize.setValue(maxMultiplication.getValue());
             }
         });
@@ -124,16 +122,30 @@ public class CardParamsForm extends VerticalLayout {
 
         generateButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         generateButton.addClickListener(e -> {
-            try {
-                cardsList.clear();
-                generateCards();
-                fileHandling.generateCSV(gamePlay);
-                linksArea.refreshFileLinks();
-            }
-            catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
+                    try {
+                        if (fileHandling.getGeneratedfilesMasterDirFile().listFiles().length >= 10) {
+                            Notification fileLimitNotif = new Notification();
+                            Text fileLimitNotifText = new Text(
+                                    "There is a limit of 10 files at a time, please delete the existing files before creating more.");
+                            fileLimitNotif.setPosition(Notification.Position.MIDDLE);
+                            Button acknowledgeButton = new Button("Acknowledge");
+                            acknowledgeButton.addClickListener(click -> fileLimitNotif.close());
+                            VerticalLayout fileLimitNotifLayout = new VerticalLayout(fileLimitNotifText, acknowledgeButton);
+                            fileLimitNotifLayout.setAlignItems(Alignment.CENTER);
+                            fileLimitNotif.add(fileLimitNotifLayout);
+                            fileLimitNotif.open();
+                        }
+                        else {
+                            cardsList.clear();
+                            generateCards();
+                            fileHandling.generateCSV(gamePlay);
+                            linksArea.refreshFileLinks();
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+        );
 
         generateButton.addClickShortcut(Key.ENTER);
         return new HorizontalLayout(clearButton, generateButton);
@@ -183,8 +195,7 @@ public class CardParamsForm extends VerticalLayout {
                         fileHandling.deleteDirectoryContents(downloadableFiles);
                         try {
                             linksArea.refreshFileLinks();
-                        }
-                        catch (IOException e) {
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                         confirmDelete.close();
