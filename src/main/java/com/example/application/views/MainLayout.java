@@ -3,7 +3,7 @@ package com.example.application.views;
 
 import com.example.application.views.about.AboutView;
 import com.example.application.views.bingo.BingoView;
-import com.example.application.views.learningresources.LearningResourcesView;
+import com.example.application.views.home.HomeView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -81,7 +81,7 @@ public class MainLayout extends AppLayout {
     }
 
     private Component createDrawerContent() {
-        H2 appName = new H2("My App");
+        H2 appName = new H2("Arthur B");
         appName.addClassNames("app-name");
 
         com.vaadin.flow.component.html.Section section = new com.vaadin.flow.component.html.Section(appName,
@@ -109,7 +109,7 @@ public class MainLayout extends AppLayout {
 
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[]{ //
-                new MenuItemInfo("Learning Resources", "la la-book-open", LearningResourcesView.class), //
+                new MenuItemInfo("Home", "la la-home", HomeView.class), //
                 new MenuItemInfo("Bingo", "la la-calculator", BingoView.class), //
                 new MenuItemInfo("About", "la la-info-circle", AboutView.class), //
 

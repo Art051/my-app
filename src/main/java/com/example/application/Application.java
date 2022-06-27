@@ -16,7 +16,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  */
 @SpringBootApplication
 @Theme(value = "myapp")
-@PWA(name = "My App", shortName = "My App", offlineResources = {})
+@PWA(name = "Arthur B", shortName = "Arthur B", offlineResources = {})
 @NpmPackage(value = "line-awesome", version = "1.3.0")
 public class Application extends SpringBootServletInitializer implements AppShellConfigurator {
 
